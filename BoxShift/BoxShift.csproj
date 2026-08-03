@@ -65,7 +65,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Models\" />
 	  <Folder Include="Pages\" />
 	  <Folder Include="Resources\Levels\" />
 	  <Folder Include="Resources\Sounds\" />
