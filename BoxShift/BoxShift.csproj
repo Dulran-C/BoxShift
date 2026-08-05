@@ -68,7 +68,6 @@
 	  <Folder Include="Pages\" />
 	  <Folder Include="Resources\Levels\" />
 	  <Folder Include="Resources\Sounds\" />
-	  <Folder Include="Services\" />
 	</ItemGroup>
 
 </Project>
