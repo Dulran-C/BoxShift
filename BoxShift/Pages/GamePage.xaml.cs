@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using BoxShift.Models;
 using BoxShift.Services;
 
@@ -34,7 +34,9 @@ public partial class GamePage : ContentPage
             if (levels == null ||
                 levels.Levels.Count == 0)
             {
-                LevelTitle.Text = "No levels found";
+                LevelTitle.Text =
+                    "No levels found";
+
                 return;
             }
 
@@ -69,13 +71,19 @@ public partial class GamePage : ContentPage
         BoardGrid.RowDefinitions.Clear();
         BoardGrid.ColumnDefinitions.Clear();
 
-        int rows = _gameEngine.Board.Rows;
-        int columns = _gameEngine.Board.Columns;
+        int rows =
+            _gameEngine.Board.Rows;
 
-        for (int row = 0; row < rows; row++)
+        int columns =
+            _gameEngine.Board.Columns;
+
+        for (int row = 0;
+             row < rows;
+             row++)
         {
             BoardGrid.RowDefinitions.Add(
-                new RowDefinition(GridLength.Auto));
+                new RowDefinition(
+                    GridLength.Auto));
         }
 
         for (int column = 0;
@@ -83,10 +91,13 @@ public partial class GamePage : ContentPage
              column++)
         {
             BoardGrid.ColumnDefinitions.Add(
-                new ColumnDefinition(GridLength.Auto));
+                new ColumnDefinition(
+                    GridLength.Auto));
         }
 
-        for (int row = 0; row < rows; row++)
+        for (int row = 0;
+             row < rows;
+             row++)
         {
             for (int column = 0;
                  column < columns;
@@ -111,22 +122,37 @@ public partial class GamePage : ContentPage
                         TextAlignment.Center
                 };
 
-                Grid.SetRow(tileLabel, row);
-                Grid.SetColumn(tileLabel, column);
+                Grid.SetRow(
+                    tileLabel,
+                    row);
 
-                BoardGrid.Children.Add(tileLabel);
+                Grid.SetColumn(
+                    tileLabel,
+                    column);
+
+                BoardGrid.Children.Add(
+                    tileLabel);
             }
         }
     }
 
-    private void MovePlayer(Direction direction)
+    private void MovePlayer(
+        Direction direction)
     {
         bool moved =
             _gameEngine.Move(direction);
 
-        if (moved)
+        if (!moved)
         {
-            DisplayBoard();
+            return;
+        }
+
+        DisplayBoard();
+
+        if (_gameEngine.IsLevelComplete())
+        {
+            LevelTitle.Text =
+                "Level Complete! 🎉";
         }
     }
 

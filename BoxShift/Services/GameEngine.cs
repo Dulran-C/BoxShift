@@ -39,7 +39,8 @@ public class GameEngine
                 if (tile == GameSymbols.Player ||
                     tile == GameSymbols.PlayerOnTarget)
                 {
-                    PlayerPosition = new Position(row, column);
+                    PlayerPosition =
+                        new Position(row, column);
                 }
             }
         }
@@ -84,8 +85,11 @@ public class GameEngine
                 break;
         }
 
-        int newRow = PlayerPosition.Row + rowChange;
-        int newColumn = PlayerPosition.Column + columnChange;
+        int newRow =
+            PlayerPosition.Row + rowChange;
+
+        int newColumn =
+            PlayerPosition.Column + columnChange;
 
         if (!IsInsideBoard(newRow, newColumn))
         {
@@ -100,11 +104,92 @@ public class GameEngine
             return false;
         }
 
-        // We will add box pushing in the next section.
         if (destination == GameSymbols.Box ||
             destination == GameSymbols.BoxOnTarget)
         {
+            bool boxMoved = TryPushBox(
+                newRow,
+                newColumn,
+                rowChange,
+                columnChange);
+
+            if (!boxMoved)
+            {
+                return false;
+            }
+        }
+
+        MovePlayerTo(
+            newRow,
+            newColumn,
+            destination);
+
+        MoveCount++;
+
+        return true;
+    }
+
+    private bool TryPushBox(
+        int boxRow,
+        int boxColumn,
+        int rowChange,
+        int columnChange)
+    {
+        if (Board == null)
+        {
             return false;
+        }
+
+        int newBoxRow =
+            boxRow + rowChange;
+
+        int newBoxColumn =
+            boxColumn + columnChange;
+
+        if (!IsInsideBoard(
+                newBoxRow,
+                newBoxColumn))
+        {
+            return false;
+        }
+
+        char boxDestination =
+            Board.GetCell(
+                newBoxRow,
+                newBoxColumn);
+
+        if (boxDestination != GameSymbols.Floor &&
+            boxDestination != GameSymbols.Target)
+        {
+            return false;
+        }
+
+        if (boxDestination == GameSymbols.Target)
+        {
+            Board.SetCell(
+                newBoxRow,
+                newBoxColumn,
+                GameSymbols.BoxOnTarget);
+        }
+        else
+        {
+            Board.SetCell(
+                newBoxRow,
+                newBoxColumn,
+                GameSymbols.Box);
+        }
+
+        return true;
+    }
+
+    private void MovePlayerTo(
+        int newRow,
+        int newColumn,
+        char destination)
+    {
+        if (Board == null)
+        {
+            return;
         }
 
         char currentTile =
@@ -112,7 +197,8 @@ public class GameEngine
                 PlayerPosition.Row,
                 PlayerPosition.Column);
 
-        if (currentTile == GameSymbols.PlayerOnTarget)
+        if (currentTile ==
+            GameSymbols.PlayerOnTarget)
         {
             Board.SetCell(
                 PlayerPosition.Row,
@@ -127,7 +213,8 @@ public class GameEngine
                 GameSymbols.Floor);
         }
 
-        if (destination == GameSymbols.Target)
+        if (destination ==
+            GameSymbols.BoxOnTarget)
         {
             Board.SetCell(
                 newRow,
@@ -142,16 +229,41 @@ public class GameEngine
                 GameSymbols.Player);
         }
 
-        PlayerPosition = new Position(
-            newRow,
-            newColumn);
+        PlayerPosition =
+            new Position(
+                newRow,
+                newColumn);
+    }
 
-        MoveCount++;
+    public bool IsLevelComplete()
+    {
+        if (Board == null)
+        {
+            return false;
+        }
+
+        for (int row = 0;
+             row < Board.Rows;
+             row++)
+        {
+            for (int column = 0;
+                 column < Board.Columns;
+                 column++)
+            {
+                if (Board.GetCell(row, column) ==
+                    GameSymbols.Box)
+                {
+                    return false;
+                }
+            }
+        }
 
         return true;
     }
 
-    private bool IsInsideBoard(int row, int column)
+    private bool IsInsideBoard(
+        int row,
+        int column)
     {
         if (Board == null)
         {
