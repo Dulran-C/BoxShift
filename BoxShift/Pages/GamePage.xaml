@@ -7,75 +7,82 @@
     Title="BoxShift">
 
     <Grid
-        Padding="20"
+        Padding="15"
         RowDefinitions="Auto,*,Auto,Auto,Auto">
 
         <Label
             x:Name="LevelTitle"
             Grid.Row="0"
             Text="Level"
-            FontSize="28"
+            FontSize="26"
             FontAttributes="Bold"
             HorizontalOptions="Center"
-            Margin="0,10,0,20" />
+            Margin="0,5,0,10" />
 
-        <Grid
-            x:Name="BoardGrid"
+        <ScrollView
             Grid.Row="1"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
+            Orientation="Both"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill">
+
+            <Grid 
+                x:Name="BoardGrid"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+        </ScrollView>
 
         <Label
             x:Name="MoveCounter"
             Grid.Row="2"
             Text="Moves: 0"
-            FontSize="20"
+            FontSize="18"
             HorizontalOptions="Center"
-            Margin="0,20,0,10" />
+            Margin="0,10,0,5" />
 
         <Grid
             Grid.Row="3"
             RowDefinitions="Auto,Auto"
             ColumnDefinitions="Auto,Auto,Auto"
             HorizontalOptions="Center"
-            ColumnSpacing="10"
-            RowSpacing="10"
-            Margin="0,10,0,10">
+            ColumnSpacing="8"
+            RowSpacing="8"
+            Margin="0,5">
 
             <Button
                 Grid.Row="0"
                 Grid.Column="1"
                 Text="↑"
-                FontSize="24"
-                WidthRequest="60"
-                HeightRequest="50"
+                FontSize="20"
+                WidthRequest="55"
+                HeightRequest="45"
                 Clicked="UpClicked" />
 
             <Button
                 Grid.Row="1"
                 Grid.Column="0"
                 Text="←"
-                FontSize="24"
-                WidthRequest="60"
-                HeightRequest="50"
+                FontSize="20"
+                WidthRequest="55"
+                HeightRequest="45"
                 Clicked="LeftClicked" />
 
             <Button
                 Grid.Row="1"
                 Grid.Column="1"
                 Text="↓"
-                FontSize="24"
-                WidthRequest="60"
-                HeightRequest="50"
+                FontSize="20"
+                WidthRequest="55"
+                HeightRequest="45"
                 Clicked="DownClicked" />
 
             <Button
                 Grid.Row="1"
                 Grid.Column="2"
                 Text="→"
-                FontSize="24"
-                WidthRequest="60"
-                HeightRequest="50"
+                FontSize="20"
+                WidthRequest="55"
+                HeightRequest="45"
                 Clicked="RightClicked" />
 
         </Grid>
@@ -83,17 +90,19 @@
         <HorizontalStackLayout
             Grid.Row="4"
             HorizontalOptions="Center"
-            Spacing="15"
-            Margin="0,10,0,10">
+            Spacing="12"
+            Margin="0,5,0,5">
 
             <Button
                 Text="Undo"
-                WidthRequest="100"
+                WidthRequest="90"
+                HeightRequest="42"
                 Clicked="UndoClicked" />
 
             <Button
                 Text="Reset"
-                WidthRequest="100"
+                WidthRequest="90"
+                HeightRequest="42"
                 Clicked="ResetClicked" />
 
         </HorizontalStackLayout>

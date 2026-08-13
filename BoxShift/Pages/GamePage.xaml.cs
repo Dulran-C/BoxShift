@@ -169,9 +169,9 @@ public partial class GamePage : ContentPage
                         Text =
                             tile.ToString(),
 
-                        FontSize = 30,
-                        WidthRequest = 40,
-                        HeightRequest = 40,
+                        FontSize = 22,
+                        WidthRequest = 32,
+                        HeightRequest = 32,
 
                         HorizontalTextAlignment =
                             TextAlignment.Center,
