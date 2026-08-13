@@ -8,7 +8,7 @@
 
     <Grid
         Padding="20"
-        RowDefinitions="Auto,*,Auto,Auto">
+        RowDefinitions="Auto,*,Auto,Auto,Auto">
 
         <Label
             x:Name="LevelTitle"
@@ -79,6 +79,24 @@
                 Clicked="RightClicked" />
 
         </Grid>
+
+        <HorizontalStackLayout
+            Grid.Row="4"
+            HorizontalOptions="Center"
+            Spacing="15"
+            Margin="0,10,0,10">
+
+            <Button
+                Text="Undo"
+                WidthRequest="100"
+                Clicked="UndoClicked" />
+
+            <Button
+                Text="Reset"
+                WidthRequest="100"
+                Clicked="ResetClicked" />
+
+        </HorizontalStackLayout>
 
     </Grid>
 

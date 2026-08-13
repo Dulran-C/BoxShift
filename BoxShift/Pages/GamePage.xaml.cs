@@ -152,8 +152,30 @@ public partial class GamePage : ContentPage
         if (_gameEngine.IsLevelComplete())
         {
             LevelTitle.Text =
-                "Level Complete! 🎉";
+                "Level Complete!";
         }
+    }
+
+    private void UndoClicked(
+        object sender,
+        EventArgs e)
+    {
+        bool undone =
+            _gameEngine.Undo();
+
+        if (undone)
+        {
+            DisplayBoard();
+        }
+    }
+
+    private void ResetClicked(
+        object sender,
+        EventArgs e)
+    {
+        _gameEngine.ResetLevel();
+
+        DisplayBoard();
     }
 
     private void UpClicked(

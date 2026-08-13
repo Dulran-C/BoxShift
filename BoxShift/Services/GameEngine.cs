@@ -13,10 +13,14 @@ public class GameEngine
 
     public int MoveCount { get; private set; }
 
+    private readonly Stack<GameState> _undoHistory = new();
+
     public void LoadLevel(Level level)
     {
         CurrentLevel = level;
         MoveCount = 0;
+
+        _undoHistory.Clear();
 
         int rows = level.Rows.Count;
         int columns = level.Rows.Max(row => row.Length);
@@ -104,6 +108,8 @@ public class GameEngine
             return false;
         }
 
+        GameState previousState = CreateGameState();
+
         if (destination == GameSymbols.Box ||
             destination == GameSymbols.BoxOnTarget)
         {
@@ -118,6 +124,8 @@ public class GameEngine
                 return false;
             }
         }
+
+        _undoHistory.Push(previousState);
 
         MovePlayerTo(
             newRow,
@@ -235,6 +243,36 @@ public class GameEngine
                 newColumn);
     }
 
+    public bool Undo()
+    {
+        if (_undoHistory.Count == 0)
+        {
+            return false;
+        }
+
+        GameState previousState =
+            _undoHistory.Pop();
+
+        Board =
+            new GameBoard(previousState.Grid);
+
+        PlayerPosition =
+            previousState.PlayerPosition.Copy();
+
+        MoveCount =
+            previousState.MoveCount;
+
+        return true;
+    }
+
+    public void ResetLevel()
+    {
+        if (CurrentLevel != null)
+        {
+            LoadLevel(CurrentLevel);
+        }
+    }
+
     public bool IsLevelComplete()
     {
         if (Board == null)
@@ -259,6 +297,36 @@ public class GameEngine
         }
 
         return true;
+    }
+
+    private GameState CreateGameState()
+    {
+        if (Board == null)
+        {
+            throw new InvalidOperationException(
+                "Cannot save game state without a board.");
+        }
+
+        char[,] gridCopy =
+            new char[Board.Rows, Board.Columns];
+
+        for (int row = 0;
+             row < Board.Rows;
+             row++)
+        {
+            for (int column = 0;
+                 column < Board.Columns;
+                 column++)
+            {
+                gridCopy[row, column] =
+                    Board.GetCell(row, column);
+            }
+        }
+
+        return new GameState(
+            gridCopy,
+            PlayerPosition.Copy(),
+            MoveCount);
     }
 
     private bool IsInsideBoard(
