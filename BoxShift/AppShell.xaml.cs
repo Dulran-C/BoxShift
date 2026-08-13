@@ -12,5 +12,10 @@ public partial class AppShell : Shell
             nameof(GamePage),
             typeof(GamePage)
         );
+
+        Routing.RegisterRoute(
+            nameof(EditorPage),
+            typeof(EditorPage)
+        );
     }
 }

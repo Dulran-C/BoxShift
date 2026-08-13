@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="BoxShift.Pages.EditorPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Level Editor">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="15">
+
+            <Label
+                Text="Level Editor"
+                FontSize="30"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Entry
+                x:Name="LevelNameEntry"
+                Placeholder="Custom level name"
+                Text="My Level" />
+
+            <HorizontalStackLayout
+                HorizontalOptions="Center"
+                Spacing="15">
+
+                <VerticalStackLayout>
+                    <Label
+                        Text="Rows"
+                        HorizontalOptions="Center" />
+
+                    <Picker
+                        x:Name="RowsPicker"
+                        WidthRequest="100" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout>
+                    <Label
+                        Text="Columns"
+                        HorizontalOptions="Center" />
+
+                    <Picker
+                        x:Name="ColumnsPicker"
+                        WidthRequest="100" />
+                </VerticalStackLayout>
+
+            </HorizontalStackLayout>
+
+            <Button
+                Text="Create Grid"
+                Clicked="CreateGridClicked"
+                HorizontalOptions="Center"
+                WidthRequest="180" />
+
+            <Label
+                Text="Choose a tile"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <HorizontalStackLayout
+                x:Name="EditorTools"
+                HorizontalOptions="Center"
+                Spacing="8">
+
+                <Button
+                    Text="Wall #"
+                    CommandParameter="#"
+                    Clicked="ToolClicked" />
+
+                <Button
+                    Text="Floor"
+                    CommandParameter=" "
+                    Clicked="ToolClicked" />
+
+                <Button
+                    Text="Box $"
+                    CommandParameter="$"
+                    Clicked="ToolClicked" />
+
+                <Button
+                    Text="Target ."
+                    CommandParameter="."
+                    Clicked="ToolClicked" />
+
+                <Button
+                    Text="Player @"
+                    CommandParameter="@"
+                    Clicked="ToolClicked" />
+
+            </HorizontalStackLayout>
+
+            <Label
+                x:Name="SelectedToolLabel"
+                Text="Selected: Wall"
+                HorizontalOptions="Center" />
+
+            <Grid
+                x:Name="EditorGrid"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <Label
+                x:Name="EditorStatus"
+                Text=""
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Button
+                x:Name="TestButton"
+                Text="Test Level"
+                Clicked="TestLevelClicked"
+                HorizontalOptions="Center"
+                WidthRequest="180" />
+
+            <Grid
+                x:Name="TestControls"
+                IsVisible="False"
+                RowDefinitions="Auto,Auto"
+                ColumnDefinitions="Auto,Auto,Auto"
+                HorizontalOptions="Center"
+                ColumnSpacing="10"
+                RowSpacing="10">
+
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Text="↑"
+                    WidthRequest="60"
+                    Clicked="TestUpClicked" />
+
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Text="←"
+                    WidthRequest="60"
+                    Clicked="TestLeftClicked" />
+
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Text="↓"
+                    WidthRequest="60"
+                    Clicked="TestDownClicked" />
+
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Text="→"
+                    WidthRequest="60"
+                    Clicked="TestRightClicked" />
+
+            </Grid>
+
+            <Button
+                x:Name="CancelTestButton"
+                Text="Stop Test"
+                Clicked="CancelTestClicked"
+                IsVisible="False"
+                HorizontalOptions="Center"
+                WidthRequest="180" />
+
+            <Button
+                x:Name="SaveButton"
+                Text="Save Level"
+                Clicked="SaveLevelClicked"
+                IsEnabled="False"
+                HorizontalOptions="Center"
+                WidthRequest="180" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

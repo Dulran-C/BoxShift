@@ -58,8 +58,10 @@ public partial class LevelSelectPage : ContentPage
                     {
                         LevelIndex = index,
                         Name = level.Name,
+
                         IsCompleted =
                             savedProgress?.IsCompleted ?? false,
+
                         BestMoves =
                             savedProgress?.BestMoves ?? 0
                     };
@@ -93,5 +95,13 @@ public partial class LevelSelectPage : ContentPage
 
         await Shell.Current.GoToAsync(
             $"{nameof(GamePage)}?levelIndex={levelIndex}");
+    }
+
+    private async void EditorClicked(
+        object sender,
+        EventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            nameof(EditorPage));  
     }
 }
