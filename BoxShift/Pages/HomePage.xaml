@@ -7,110 +7,115 @@
     Title="BoxShift"
     BackgroundColor="{AppThemeBinding Light=#F5F7FB, Dark=#12131A}">
 
-    <Grid
-        Padding="30"
-        RowDefinitions="*,Auto,*">
+    <ScrollView>
 
         <VerticalStackLayout
-            Grid.Row="0"
-            VerticalOptions="End"
-            HorizontalOptions="Center"
-            Spacing="8">
-
-            <Border
-                WidthRequest="75"
-                HeightRequest="75"
-                StrokeThickness="0"
-                Background="#5746E8"
-                StrokeShape="RoundRectangle 20">
-
-                <Label
-                    Text="B"
-                    FontSize="38"
-                    FontAttributes="Bold"
-                    TextColor="White"
-                    HorizontalTextAlignment="Center"
-                    VerticalTextAlignment="Center" />
-
-            </Border>
-
-            <Label
-                Text="BOXSHIFT"
-                FontSize="42"
-                FontAttributes="Bold"
-                CharacterSpacing="2"
-                HorizontalOptions="Center"
-                TextColor="{AppThemeBinding Light=#171821, Dark=White}" />
-
-            <Label
-                Text="Push. Plan. Solve."
-                FontSize="17"
-                HorizontalOptions="Center"
-                TextColor="{AppThemeBinding Light=#666A75, Dark=#B8BBC7}" />
-
-        </VerticalStackLayout>
-
-        <Border
-            Grid.Row="1"
-            WidthRequest="320"
-            Margin="0,35"
-            Padding="24"
-            StrokeThickness="1"
-            Stroke="{AppThemeBinding Light=#E1E4EA, Dark=#343744}"
-            Background="{AppThemeBinding Light=White, Dark=#1E202A}"
-            StrokeShape="RoundRectangle 22">
+            Padding="30"
+            Spacing="28"
+            HorizontalOptions="Center">
 
             <VerticalStackLayout
-                Spacing="14">
+                HorizontalOptions="Center"
+                Spacing="8"
+                Margin="0,30,0,0">
 
-                <Button
-                    Text="Play"
-                    HeightRequest="55"
-                    FontSize="18"
+                <Border
+                    WidthRequest="75"
+                    HeightRequest="75"
+                    StrokeThickness="0"
+                    Background="#5746E8"
+                    StrokeShape="RoundRectangle 20"
+                    HorizontalOptions="Center">
+
+                    <Label
+                        Text="B"
+                        FontSize="38"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+
+                </Border>
+
+                <Label
+                    Text="BOXSHIFT"
+                    FontSize="42"
                     FontAttributes="Bold"
-                    CornerRadius="14"
-                    BackgroundColor="#5746E8"
-                    TextColor="White"
-                    Clicked="PlayClicked" />
+                    CharacterSpacing="2"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light=#171821, Dark=White}" />
 
-                <Button
-                    Text="Create Level"
-                    HeightRequest="52"
+                <Label
+                    Text="Push. Plan. Solve."
                     FontSize="17"
-                    CornerRadius="14"
-                    Clicked="EditorClicked" />
-
-                <Button
-                    Text="Settings"
-                    HeightRequest="52"
-                    FontSize="17"
-                    CornerRadius="14"
-                    Clicked="SettingsClicked" />
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light=#666A75, Dark=#B8BBC7}" />
 
             </VerticalStackLayout>
 
-        </Border>
+            <Border
+                WidthRequest="320"
+                Padding="24"
+                StrokeThickness="1"
+                Stroke="{AppThemeBinding Light=#E1E4EA, Dark=#343744}"
+                Background="{AppThemeBinding Light=White, Dark=#1E202A}"
+                StrokeShape="RoundRectangle 22"
+                HorizontalOptions="Center">
 
-        <VerticalStackLayout
-            Grid.Row="2"
-            VerticalOptions="Start"
-            HorizontalOptions="Center"
-            Spacing="2">
+                <VerticalStackLayout
+                    Spacing="14">
 
-            <Label
-                Text="Sokoban Puzzle Game"
-                FontSize="13"
+                    <Button
+                        Text="Play"
+                        HeightRequest="55"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        CornerRadius="14"
+                        BackgroundColor="#5746E8"
+                        TextColor="White"
+                        Clicked="PlayClicked" />
+
+                    <Button
+                        Text="Create Level"
+                        HeightRequest="52"
+                        FontSize="17"
+                        CornerRadius="14"
+                        Clicked="EditorClicked" />
+
+                    <Button
+                        Text="Settings"
+                        HeightRequest="52"
+                        FontSize="17"
+                        CornerRadius="14"
+                        Clicked="SettingsClicked" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <VerticalStackLayout
                 HorizontalOptions="Center"
-                TextColor="{AppThemeBinding Light=#777B86, Dark=#999DAA}" />
+                Spacing="2"
+                Margin="0,5,0,20">
 
-            <Label
-                Text="Version 1.0"
-                FontSize="11"
-                HorizontalOptions="Center"
-                TextColor="{AppThemeBinding Light=#999DA5, Dark=#747784}" />
+                <Label
+                    Text="Sokoban Puzzle Game"
+                    FontSize="13"
+                    HorizontalOptions="Center"
+                    TextColor="{AppThemeBinding Light=#777B86, Dark=#999DAA}" />
+
+                <Label
+                    Text="Version 1.0"
+                    FontSize="11"
+                    HorizontalOptions="Center"
+                    TextColor="{AppThemeBinding Light=#999DA5, Dark=#747784}" />
+
+            </VerticalStackLayout>
 
         </VerticalStackLayout>
 
-    </Grid>
+    </ScrollView>
 
 </ContentPage>
