@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="BoxShift.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Settings">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="25">
+
+            <Label
+                Text="Settings"
+                FontSize="32"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Border
+                Padding="20"
+                StrokeThickness="1">
+
+                <Grid
+                    ColumnDefinitions="*,Auto">
+
+                    <VerticalStackLayout
+                        Grid.Column="0">
+
+                        <Label
+                            Text="Dark Mode"
+                            FontSize="18"
+                            FontAttributes="Bold" />
+
+                        <Label
+                            Text="Use a darker app theme"
+                            FontSize="14" />
+
+                    </VerticalStackLayout>
+
+                    <Switch
+                        x:Name="DarkModeSwitch"
+                        Grid.Column="1"
+                        Toggled="DarkModeToggled"
+                        VerticalOptions="Center" />
+
+                </Grid>
+
+            </Border>
+
+            <Border
+                Padding="20"
+                StrokeThickness="1">
+
+                <VerticalStackLayout
+                    Spacing="10">
+
+                    <Label
+                        Text="Grid Theme"
+                        FontSize="18"
+                        FontAttributes="Bold" />
+
+                    <Label
+                        Text="Choose the board colour style"
+                        FontSize="14" />
+
+                    <Picker
+                        x:Name="GridThemePicker"
+                        SelectedIndexChanged="GridThemeChanged" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <Border
+                Padding="20"
+                StrokeThickness="1">
+
+                <Grid
+                    ColumnDefinitions="*,Auto">
+
+                    <VerticalStackLayout
+                        Grid.Column="0">
+
+                        <Label
+                            Text="Animations"
+                            FontSize="18"
+                            FontAttributes="Bold" />
+
+                        <Label
+                            Text="Enable movement and completion animations"
+                            FontSize="14" />
+
+                    </VerticalStackLayout>
+
+                    <Switch
+                        x:Name="AnimationsSwitch"
+                        Grid.Column="1"
+                        Toggled="AnimationsToggled"
+                        VerticalOptions="Center" />
+
+                </Grid>
+
+            </Border>
+
+            <Label
+                x:Name="SettingsStatus"
+                Text=""
+                HorizontalOptions="Center"
+                FontAttributes="Italic" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

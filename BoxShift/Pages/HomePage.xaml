@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="BoxShift.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="BoxShift">
+
+    <Grid
+        Padding="30"
+        RowDefinitions="*,Auto,*">
+
+        <VerticalStackLayout
+            Grid.Row="0"
+            VerticalOptions="End"
+            HorizontalOptions="Center"
+            Spacing="5">
+
+            <Label
+                Text="BOXSHIFT"
+                FontSize="42"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Push. Plan. Solve."
+                FontSize="17"
+                HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+
+        <VerticalStackLayout
+            Grid.Row="1"
+            WidthRequest="280"
+            Spacing="15"
+            Margin="0,40">
+
+            <Button
+                Text="Play"
+                HeightRequest="55"
+                FontSize="18"
+                Clicked="PlayClicked" />
+
+            <Button
+                Text="Create Level"
+                HeightRequest="55"
+                FontSize="18"
+                Clicked="EditorClicked" />
+
+            <Button
+                Text="Settings"
+                HeightRequest="55"
+                FontSize="18"
+                Clicked="SettingsClicked" />
+
+        </VerticalStackLayout>
+
+        <Label
+            Grid.Row="2"
+            Text="Sokoban Puzzle Game"
+            FontSize="13"
+            VerticalOptions="Start"
+            HorizontalOptions="Center" />
+
+    </Grid>
+
+</ContentPage>

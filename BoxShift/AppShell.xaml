@@ -8,7 +8,7 @@
     FlyoutBehavior="Disabled">
 
     <ShellContent
-        Title="Levels"
-        ContentTemplate="{DataTemplate pages:LevelSelectPage}" />
+        Title="BoxShift"
+        ContentTemplate="{DataTemplate pages:HomePage}" />
 
 </Shell>
