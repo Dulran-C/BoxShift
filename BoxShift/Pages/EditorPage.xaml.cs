@@ -4,9 +4,11 @@ using BoxShift.Services;
 
 namespace BoxShift.Pages;
 
+[QueryProperty(nameof(CustomIndex), "customIndex")]
 public partial class EditorPage : ContentPage
 {
-    private char[,] _editorGrid = new char[5, 5];
+    private char[,] _editorGrid =
+        new char[5, 5];
 
     private char _selectedTool =
         GameSymbols.Wall;
@@ -15,7 +17,15 @@ public partial class EditorPage : ContentPage
 
     private bool _levelValidated;
 
-    private readonly CustomLevelService _customLevelService;
+    private bool _existingLevelLoaded;
+
+    private int _editingIndex = -1;
+
+    private readonly CustomLevelService
+        _customLevelService;
+
+    public string CustomIndex { get; set; } =
+        "-1";
 
     public EditorPage()
     {
@@ -36,6 +46,94 @@ public partial class EditorPage : ContentPage
         CreateBlankGrid(5, 5);
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (!_existingLevelLoaded)
+        {
+            await LoadExistingLevelAsync();
+        }
+    }
+
+    private async Task LoadExistingLevelAsync()
+    {
+        _existingLevelLoaded = true;
+
+        if (!int.TryParse(
+                CustomIndex,
+                out int index))
+        {
+            return;
+        }
+
+        if (index < 0)
+        {
+            return;
+        }
+
+        List<Level> levels =
+            await _customLevelService
+                .LoadCustomLevelsAsync();
+
+        if (index >= levels.Count)
+        {
+            return;
+        }
+
+        _editingIndex = index;
+
+        Level level =
+            levels[index];
+
+        LevelNameEntry.Text =
+            level.Name;
+
+        int rows =
+            level.Rows.Count;
+
+        int columns =
+            level.Rows.Max(
+                row => row.Length);
+
+        RowsPicker.SelectedItem = rows;
+        ColumnsPicker.SelectedItem = columns;
+
+        _editorGrid =
+            new char[rows, columns];
+
+        for (int row = 0;
+             row < rows;
+             row++)
+        {
+            for (int column = 0;
+                 column < columns;
+                 column++)
+            {
+                char tile =
+                    GameSymbols.Floor;
+
+                if (column <
+                    level.Rows[row].Length)
+                {
+                    tile =
+                        level.Rows[row][column];
+                }
+
+                _editorGrid[row, column] =
+                    tile;
+            }
+        }
+
+        _levelValidated = false;
+        SaveButton.IsEnabled = false;
+
+        EditorStatus.Text =
+            "Editing custom level. Test before saving changes.";
+
+        DisplayEditorGrid();
+    }
+
     private void CreateGridClicked(
         object sender,
         EventArgs e)
@@ -46,7 +144,9 @@ public partial class EditorPage : ContentPage
         int columns =
             (int)(ColumnsPicker.SelectedItem ?? 5);
 
-        CreateBlankGrid(rows, columns);
+        CreateBlankGrid(
+            rows,
+            columns);
 
         EditorStatus.Text =
             "New grid created.";
@@ -73,7 +173,11 @@ public partial class EditorPage : ContentPage
         }
 
         _levelValidated = false;
-        SaveButton.IsEnabled = false;
+
+        if (SaveButton != null)
+        {
+            SaveButton.IsEnabled = false;
+        }
 
         DisplayEditorGrid();
     }
@@ -101,7 +205,8 @@ public partial class EditorPage : ContentPage
             return;
         }
 
-        _selectedTool = value[0];
+        _selectedTool =
+            value[0];
 
         SelectedToolLabel.Text =
             $"Selected: {button.Text}";
@@ -149,12 +254,13 @@ public partial class EditorPage : ContentPage
                     new Button
                     {
                         Text =
-                            _editorGrid[row, column]
+                            _editorGrid[
+                                row,
+                                column]
                             .ToString(),
 
                         WidthRequest = 45,
                         HeightRequest = 45,
-
                         Padding = 0,
 
                         CommandParameter =
@@ -188,7 +294,8 @@ public partial class EditorPage : ContentPage
         }
 
         string? position =
-            button.CommandParameter?.ToString();
+            button.CommandParameter
+                ?.ToString();
 
         if (position == null)
         {
@@ -238,10 +345,14 @@ public partial class EditorPage : ContentPage
                  column < columns;
                  column++)
             {
-                if (_editorGrid[row, column] ==
+                if (_editorGrid[
+                        row,
+                        column] ==
                     GameSymbols.Player)
                 {
-                    _editorGrid[row, column] =
+                    _editorGrid[
+                        row,
+                        column] =
                         GameSymbols.Floor;
                 }
             }
@@ -269,7 +380,9 @@ public partial class EditorPage : ContentPage
         TestButton.IsVisible = false;
 
         TestControls.IsVisible = true;
-        CancelTestButton.IsVisible = true;
+
+        CancelTestButton.IsVisible =
+            true;
 
         EditorStatus.Text =
             "Test mode: solve your level.";
@@ -287,19 +400,24 @@ public partial class EditorPage : ContentPage
             new List<string>();
 
         for (int row = 0;
-             row < _editorGrid.GetLength(0);
+             row <
+             _editorGrid.GetLength(0);
              row++)
         {
             char[] rowCharacters =
                 new char[
-                    _editorGrid.GetLength(1)];
+                    _editorGrid
+                        .GetLength(1)];
 
             for (int column = 0;
-                 column < _editorGrid.GetLength(1);
+                 column <
+                 _editorGrid.GetLength(1);
                  column++)
             {
                 char tile =
-                    _editorGrid[row, column];
+                    _editorGrid[
+                        row,
+                        column];
 
                 rowCharacters[column] =
                     tile;
@@ -324,7 +442,8 @@ public partial class EditorPage : ContentPage
             }
 
             rows.Add(
-                new string(rowCharacters));
+                new string(
+                    rowCharacters));
         }
 
         if (playerCount != 1)
@@ -352,11 +471,14 @@ public partial class EditorPage : ContentPage
         }
 
         string levelName =
-            LevelNameEntry.Text?.Trim() ?? "";
+            LevelNameEntry.Text?.Trim()
+            ?? "";
 
-        if (string.IsNullOrWhiteSpace(levelName))
+        if (string.IsNullOrWhiteSpace(
+                levelName))
         {
-            levelName = "Custom Level";
+            levelName =
+                "Custom Level";
         }
 
         return new Level
@@ -378,7 +500,8 @@ public partial class EditorPage : ContentPage
         EditorGrid.ColumnDefinitions.Clear();
 
         for (int row = 0;
-             row < _testEngine.Board.Rows;
+             row <
+             _testEngine.Board.Rows;
              row++)
         {
             EditorGrid.RowDefinitions.Add(
@@ -387,7 +510,8 @@ public partial class EditorPage : ContentPage
         }
 
         for (int column = 0;
-             column < _testEngine.Board.Columns;
+             column <
+             _testEngine.Board.Columns;
              column++)
         {
             EditorGrid.ColumnDefinitions.Add(
@@ -396,11 +520,13 @@ public partial class EditorPage : ContentPage
         }
 
         for (int row = 0;
-             row < _testEngine.Board.Rows;
+             row <
+             _testEngine.Board.Rows;
              row++)
         {
             for (int column = 0;
-                 column < _testEngine.Board.Columns;
+                 column <
+                 _testEngine.Board.Columns;
                  column++)
             {
                 Label cellLabel =
@@ -408,8 +534,10 @@ public partial class EditorPage : ContentPage
                     {
                         Text =
                             _testEngine.Board
-                            .GetCell(row, column)
-                            .ToString(),
+                                .GetCell(
+                                    row,
+                                    column)
+                                .ToString(),
 
                         WidthRequest = 45,
                         HeightRequest = 45,
@@ -454,19 +582,28 @@ public partial class EditorPage : ContentPage
 
         DisplayTestGrid();
 
-        if (_testEngine.IsLevelComplete())
+        if (_testEngine
+            .IsLevelComplete())
         {
             _levelValidated = true;
 
-            SaveButton.IsEnabled = true;
+            SaveButton.IsEnabled =
+                true;
 
             EditorStatus.Text =
                 "Test passed! You can save this level.";
 
-            TestControls.IsVisible = false;
-            CancelTestButton.IsVisible = false;
-            EditorTools.IsVisible = true;
-            TestButton.IsVisible = true;
+            TestControls.IsVisible =
+                false;
+
+            CancelTestButton.IsVisible =
+                false;
+
+            EditorTools.IsVisible =
+                true;
+
+            TestButton.IsVisible =
+                true;
 
             DisplayEditorGrid();
         }
@@ -478,11 +615,17 @@ public partial class EditorPage : ContentPage
     {
         _testEngine = null;
 
-        TestControls.IsVisible = false;
-        CancelTestButton.IsVisible = false;
+        TestControls.IsVisible =
+            false;
 
-        EditorTools.IsVisible = true;
-        TestButton.IsVisible = true;
+        CancelTestButton.IsVisible =
+            false;
+
+        EditorTools.IsVisible =
+            true;
+
+        TestButton.IsVisible =
+            true;
 
         EditorStatus.Text =
             "Test stopped. Level was not validated.";
@@ -510,42 +653,62 @@ public partial class EditorPage : ContentPage
             return;
         }
 
-        await _customLevelService
-            .SaveCustomLevelAsync(level);
+        if (_editingIndex >= 0)
+        {
+            await _customLevelService
+                .UpdateCustomLevelAsync(
+                    _editingIndex,
+                    level);
 
-        EditorStatus.Text =
-            "Custom level saved!";
+            EditorStatus.Text =
+                "Custom level updated!";
+        }
+        else  
+        {
+            await _customLevelService
+                .SaveCustomLevelAsync(
+                    level);
 
-        SaveButton.IsEnabled = false;
+            EditorStatus.Text =
+                "Custom level saved!";
+        }
 
-        _levelValidated = false;
+        SaveButton.IsEnabled =
+            false;
+
+        _levelValidated =
+            false;
     }
 
     private void TestUpClicked(
         object sender,
         EventArgs e)
     {
-        MoveTestPlayer(Direction.Up);
+        MoveTestPlayer(
+            Direction.Up);
     }
 
     private void TestDownClicked(
         object sender,
         EventArgs e)
     {
-        MoveTestPlayer(Direction.Down);
+        MoveTestPlayer(
+            Direction.Down);
     }
 
     private void TestLeftClicked(
         object sender,
         EventArgs e)
     {
-        MoveTestPlayer(Direction.Left);
+        MoveTestPlayer(
+            Direction.Left);
     }
 
     private void TestRightClicked(
         object sender,
         EventArgs e)
     {
-        MoveTestPlayer(Direction.Right);
+        MoveTestPlayer(
+            Direction.Right);
     }
 }

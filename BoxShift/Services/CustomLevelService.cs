@@ -37,6 +37,47 @@ public class CustomLevelService
 
         levels.Add(level);
 
+        await SaveAllCustomLevelsAsync(levels);
+    }
+
+    public async Task UpdateCustomLevelAsync(
+        int index,
+        Level updatedLevel)
+    {
+        List<Level> levels =
+            await LoadCustomLevelsAsync();
+
+        if (index < 0 ||
+            index >= levels.Count)
+        {
+            return;
+        }
+
+        levels[index] = updatedLevel;
+
+        await SaveAllCustomLevelsAsync(levels);
+    }
+
+    public async Task DeleteCustomLevelAsync(
+        int index)
+    {
+        List<Level> levels =
+            await LoadCustomLevelsAsync();
+
+        if (index < 0 ||
+            index >= levels.Count)
+        {
+            return;
+        }
+
+        levels.RemoveAt(index);
+
+        await SaveAllCustomLevelsAsync(levels);
+    }
+
+    private async Task SaveAllCustomLevelsAsync(
+        List<Level> levels)
+    {
         string json =
             JsonSerializer.Serialize(
                 levels,

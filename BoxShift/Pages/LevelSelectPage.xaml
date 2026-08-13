@@ -52,7 +52,7 @@
 
                         <Grid
                             ColumnDefinitions="*,Auto"
-                            RowDefinitions="Auto,Auto">
+                            RowDefinitions="Auto,Auto,Auto">
 
                             <Label
                                 Grid.Row="0"
@@ -67,15 +67,34 @@
                                 Text="{Binding ProgressText}"
                                 FontSize="14" />
 
-                            <Button
+                            <HorizontalStackLayout
                                 Grid.Row="0"
-                                Grid.RowSpan="2"
+                                Grid.RowSpan="3"
                                 Grid.Column="1"
-                                Text="Play"
-                                WidthRequest="90"
-                                CommandParameter="{Binding LevelIndex}"
-                                Clicked="PlayLevelClicked"
-                                VerticalOptions="Center" />
+                                Spacing="8"
+                                VerticalOptions="Center">
+
+                                <Button
+                                    Text="Play"
+                                    WidthRequest="75"
+                                    CommandParameter="{Binding .}"
+                                    Clicked="PlayLevelClicked" />
+
+                                <Button
+                                    Text="Edit"
+                                    WidthRequest="75"
+                                    IsVisible="{Binding IsCustom}"
+                                    CommandParameter="{Binding LevelIndex}"
+                                    Clicked="EditLevelClicked" />
+
+                                <Button
+                                    Text="Delete"
+                                    WidthRequest="80"
+                                    IsVisible="{Binding IsCustom}"
+                                    CommandParameter="{Binding LevelIndex}"
+                                    Clicked="DeleteLevelClicked" />
+
+                            </HorizontalStackLayout>
 
                         </Grid>
 

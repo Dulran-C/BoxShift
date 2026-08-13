@@ -10,10 +10,25 @@ public class LevelSelectItem
 
     public int BestMoves { get; set; }
 
+    public bool IsCustom { get; set; }
+
+    public string LevelSource
+    {
+        get
+        {
+            return IsCustom ? "custom" : "builtin";
+        }
+    }
+
     public string ProgressText
     {
         get
         {
+            if (IsCustom)
+            {
+                return "Custom Level";
+            }
+
             if (IsCompleted)
             {
                 return $"Completed | Best: {BestMoves} moves";

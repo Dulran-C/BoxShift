@@ -5,13 +5,18 @@ using BoxShift.Services;
 namespace BoxShift.Pages;
 
 [QueryProperty(nameof(LevelIndex), "levelIndex")]
+[QueryProperty(nameof(LevelSource), "levelSource")]
 public partial class GamePage : ContentPage
 {
     private readonly GameEngine _gameEngine;
     private readonly LevelService _levelService;
     private readonly ProgressService _progressService;
+    private readonly CustomLevelService _customLevelService;
 
     public string LevelIndex { get; set; } = "0";
+
+    public string LevelSource { get; set; } =
+        "builtin";
 
     public GamePage()
     {
@@ -20,6 +25,8 @@ public partial class GamePage : ContentPage
         _gameEngine = new GameEngine();
         _levelService = new LevelService();
         _progressService = new ProgressService();
+        _customLevelService =
+            new CustomLevelService();
     }
 
     protected override async void OnAppearing()
@@ -36,16 +43,6 @@ public partial class GamePage : ContentPage
     {
         try
         {
-            LevelCollection? levels =
-                await _levelService.LoadLevelsAsync();
-
-            if (levels == null ||
-                levels.Levels.Count == 0)
-            {
-                LevelTitle.Text = "No levels found";
-                return;
-            }
-
             int selectedIndex;
 
             if (!int.TryParse(
@@ -55,16 +52,48 @@ public partial class GamePage : ContentPage
                 selectedIndex = 0;
             }
 
-            if (selectedIndex < 0 ||
-                selectedIndex >= levels.Levels.Count)
+            Level? selectedLevel = null;
+
+            if (LevelSource == "custom")
             {
-                selectedIndex = 0;
+                List<Level> customLevels =
+                    await _customLevelService
+                        .LoadCustomLevelsAsync();
+
+                if (selectedIndex >= 0 &&
+                    selectedIndex < customLevels.Count)
+                {
+                    selectedLevel =
+                        customLevels[selectedIndex];
+                }
+            }
+            else
+            {
+                LevelCollection? builtInLevels =
+                    await _levelService
+                        .LoadLevelsAsync();
+
+                if (builtInLevels != null &&
+                    selectedIndex >= 0 &&
+                    selectedIndex <
+                    builtInLevels.Levels.Count)
+                {
+                    selectedLevel =
+                        builtInLevels
+                            .Levels[selectedIndex];
+                }
             }
 
-            Level selectedLevel =
-                levels.Levels[selectedIndex];
+            if (selectedLevel == null)
+            {
+                LevelTitle.Text =
+                    "Level could not be loaded";
 
-            _gameEngine.LoadLevel(selectedLevel);
+                return;
+            }
+
+            _gameEngine.LoadLevel(
+                selectedLevel);
 
             DisplayBoard();
         }
@@ -86,7 +115,8 @@ public partial class GamePage : ContentPage
         }
 
         LevelTitle.Text =
-            _gameEngine.CurrentLevel?.Name ?? "Level";
+            _gameEngine.CurrentLevel?.Name
+            ?? "Level";
 
         MoveCounter.Text =
             $"Moves: {_gameEngine.MoveCount}";
@@ -95,15 +125,19 @@ public partial class GamePage : ContentPage
         BoardGrid.RowDefinitions.Clear();
         BoardGrid.ColumnDefinitions.Clear();
 
-        int rows = _gameEngine.Board.Rows;
-        int columns = _gameEngine.Board.Columns;
+        int rows =
+            _gameEngine.Board.Rows;
+
+        int columns =
+            _gameEngine.Board.Columns;
 
         for (int row = 0;
              row < rows;
              row++)
         {
             BoardGrid.RowDefinitions.Add(
-                new RowDefinition(GridLength.Auto));
+                new RowDefinition(
+                    GridLength.Auto));
         }
 
         for (int column = 0;
@@ -111,7 +145,8 @@ public partial class GamePage : ContentPage
              column++)
         {
             BoardGrid.ColumnDefinitions.Add(
-                new ColumnDefinition(GridLength.Auto));
+                new ColumnDefinition(
+                    GridLength.Auto));
         }
 
         for (int row = 0;
@@ -123,28 +158,38 @@ public partial class GamePage : ContentPage
                  column++)
             {
                 char tile =
-                    _gameEngine.Board.GetCell(
-                        row,
-                        column);
+                    _gameEngine.Board
+                        .GetCell(
+                            row,
+                            column);
 
-                Label tileLabel = new Label
-                {
-                    Text = tile.ToString(),
-                    FontSize = 30,
-                    WidthRequest = 40,
-                    HeightRequest = 40,
+                Label tileLabel =
+                    new Label
+                    {
+                        Text =
+                            tile.ToString(),
 
-                    HorizontalTextAlignment =
-                        TextAlignment.Center,
+                        FontSize = 30,
+                        WidthRequest = 40,
+                        HeightRequest = 40,
 
-                    VerticalTextAlignment =
-                        TextAlignment.Center
-                };
+                        HorizontalTextAlignment =
+                            TextAlignment.Center,
 
-                Grid.SetRow(tileLabel, row);
-                Grid.SetColumn(tileLabel, column);
+                        VerticalTextAlignment =
+                            TextAlignment.Center
+                    };
 
-                BoardGrid.Children.Add(tileLabel);
+                Grid.SetRow(
+                    tileLabel,
+                    row);
+
+                Grid.SetColumn(
+                    tileLabel,
+                    column);
+
+                BoardGrid.Children.Add(
+                    tileLabel);
             }
         }
     }
@@ -167,13 +212,15 @@ public partial class GamePage : ContentPage
             LevelTitle.Text =
                 "Level Complete!";
 
-            if (int.TryParse(
+            if (LevelSource == "builtin" &&
+                int.TryParse(
                     LevelIndex,
                     out int selectedIndex))
             {
-                await _progressService.RecordCompletionAsync(
-                    selectedIndex,
-                    _gameEngine.MoveCount);
+                await _progressService
+                    .RecordCompletionAsync(
+                        selectedIndex,
+                        _gameEngine.MoveCount);
             }
         }
     }
@@ -204,27 +251,31 @@ public partial class GamePage : ContentPage
         object sender,
         EventArgs e)
     {
-        await MovePlayerAsync(Direction.Up);
+        await MovePlayerAsync(
+            Direction.Up);
     }
 
     private async void DownClicked(
         object sender,
         EventArgs e)
     {
-        await MovePlayerAsync(Direction.Down);
+        await MovePlayerAsync(
+            Direction.Down);
     }
 
     private async void LeftClicked(
         object sender,
         EventArgs e)
     {
-        await MovePlayerAsync(Direction.Left);
+        await MovePlayerAsync(
+            Direction.Left);
     }
 
     private async void RightClicked(
         object sender,
         EventArgs e)
     {
-        await MovePlayerAsync(Direction.Right);
+        await MovePlayerAsync(
+            Direction.Right);
     }
 }
