@@ -9,6 +9,7 @@ public partial class GamePage : ContentPage
 {
     private readonly GameEngine _gameEngine;
     private readonly LevelService _levelService;
+    private readonly ProgressService _progressService;
 
     public string LevelIndex { get; set; } = "0";
 
@@ -18,6 +19,7 @@ public partial class GamePage : ContentPage
 
         _gameEngine = new GameEngine();
         _levelService = new LevelService();
+        _progressService = new ProgressService();
     }
 
     protected override async void OnAppearing()
@@ -40,13 +42,11 @@ public partial class GamePage : ContentPage
             if (levels == null ||
                 levels.Levels.Count == 0)
             {
-                LevelTitle.Text =
-                    "No levels found";
-
+                LevelTitle.Text = "No levels found";
                 return;
             }
 
-            int selectedIndex = 0;
+            int selectedIndex;
 
             if (!int.TryParse(
                     LevelIndex,
@@ -95,19 +95,15 @@ public partial class GamePage : ContentPage
         BoardGrid.RowDefinitions.Clear();
         BoardGrid.ColumnDefinitions.Clear();
 
-        int rows =
-            _gameEngine.Board.Rows;
-
-        int columns =
-            _gameEngine.Board.Columns;
+        int rows = _gameEngine.Board.Rows;
+        int columns = _gameEngine.Board.Columns;
 
         for (int row = 0;
              row < rows;
              row++)
         {
             BoardGrid.RowDefinitions.Add(
-                new RowDefinition(
-                    GridLength.Auto));
+                new RowDefinition(GridLength.Auto));
         }
 
         for (int column = 0;
@@ -115,8 +111,7 @@ public partial class GamePage : ContentPage
              column++)
         {
             BoardGrid.ColumnDefinitions.Add(
-                new ColumnDefinition(
-                    GridLength.Auto));
+                new ColumnDefinition(GridLength.Auto));
         }
 
         for (int row = 0;
@@ -146,21 +141,15 @@ public partial class GamePage : ContentPage
                         TextAlignment.Center
                 };
 
-                Grid.SetRow(
-                    tileLabel,
-                    row);
+                Grid.SetRow(tileLabel, row);
+                Grid.SetColumn(tileLabel, column);
 
-                Grid.SetColumn(
-                    tileLabel,
-                    column);
-
-                BoardGrid.Children.Add(
-                    tileLabel);
+                BoardGrid.Children.Add(tileLabel);
             }
         }
     }
 
-    private void MovePlayer(
+    private async Task MovePlayerAsync(
         Direction direction)
     {
         bool moved =
@@ -177,6 +166,15 @@ public partial class GamePage : ContentPage
         {
             LevelTitle.Text =
                 "Level Complete!";
+
+            if (int.TryParse(
+                    LevelIndex,
+                    out int selectedIndex))
+            {
+                await _progressService.RecordCompletionAsync(
+                    selectedIndex,
+                    _gameEngine.MoveCount);
+            }
         }
     }
 
@@ -202,31 +200,31 @@ public partial class GamePage : ContentPage
         DisplayBoard();
     }
 
-    private void UpClicked(
+    private async void UpClicked(
         object sender,
         EventArgs e)
     {
-        MovePlayer(Direction.Up);
+        await MovePlayerAsync(Direction.Up);
     }
 
-    private void DownClicked(
+    private async void DownClicked(
         object sender,
         EventArgs e)
     {
-        MovePlayer(Direction.Down);
+        await MovePlayerAsync(Direction.Down);
     }
 
-    private void LeftClicked(
+    private async void LeftClicked(
         object sender,
         EventArgs e)
     {
-        MovePlayer(Direction.Left);
+        await MovePlayerAsync(Direction.Left);
     }
 
-    private void RightClicked(
+    private async void RightClicked(
         object sender,
         EventArgs e)
     {
-        MovePlayer(Direction.Right);
+        await MovePlayerAsync(Direction.Right);
     }
 }

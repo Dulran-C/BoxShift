@@ -7,15 +7,14 @@ namespace BoxShift.Pages;
 public partial class LevelSelectPage : ContentPage
 {
     private readonly LevelService _levelService;
-
-    private List<Level> _levels;
+    private readonly ProgressService _progressService;
 
     public LevelSelectPage()
     {
         InitializeComponent();
 
         _levelService = new LevelService();
-        _levels = new List<Level>();
+        _progressService = new ProgressService();
     }
 
     protected override async void OnAppearing()
@@ -37,9 +36,39 @@ public partial class LevelSelectPage : ContentPage
                 return;
             }
 
-            _levels = levelCollection.Levels;
+            List<LevelProgress> progress =
+                await _progressService.LoadProgressAsync();
 
-            LevelsCollection.ItemsSource = _levels;
+            List<LevelSelectItem> levelItems =
+                new List<LevelSelectItem>();
+
+            for (int index = 0;
+                 index < levelCollection.Levels.Count;
+                 index++)
+            {
+                Level level =
+                    levelCollection.Levels[index];
+
+                LevelProgress? savedProgress =
+                    progress.FirstOrDefault(
+                        item => item.LevelIndex == index);
+
+                LevelSelectItem item =
+                    new LevelSelectItem
+                    {
+                        LevelIndex = index,
+                        Name = level.Name,
+                        IsCompleted =
+                            savedProgress?.IsCompleted ?? false,
+                        BestMoves =
+                            savedProgress?.BestMoves ?? 0
+                    };
+
+                levelItems.Add(item);
+            }
+
+            LevelsCollection.ItemsSource =
+                levelItems;
         }
         catch (Exception exception)
         {
@@ -57,15 +86,7 @@ public partial class LevelSelectPage : ContentPage
             return;
         }
 
-        if (button.CommandParameter is not Level selectedLevel)
-        {
-            return;
-        }
-
-        int levelIndex =
-            _levels.IndexOf(selectedLevel);
-
-        if (levelIndex < 0)
+        if (button.CommandParameter is not int levelIndex)
         {
             return;
         }
