@@ -4,116 +4,219 @@
     x:Class="BoxShift.Pages.EditorPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Level Editor">
+    Title="Level Editor"
+    BackgroundColor="{AppThemeBinding Light=#F5F7FB, Dark=#12131A}">
 
     <ScrollView>
 
         <VerticalStackLayout
-            Padding="20"
-            Spacing="15">
+            Padding="18"
+            Spacing="16">
 
-            <Label
-                Text="Level Editor"
-                FontSize="30"
-                FontAttributes="Bold"
-                HorizontalOptions="Center" />
+            <VerticalStackLayout
+                Spacing="4">
 
-            <Entry
-                x:Name="LevelNameEntry"
-                Placeholder="Custom level name"
-                Text="My Level" />
+                <Label
+                    Text="Level Editor"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    TextColor="{AppThemeBinding Light=#171821, Dark=White}" />
 
-            <HorizontalStackLayout
-                HorizontalOptions="Center"
-                Spacing="15">
+                <Label
+                    Text="Build, test and save your own Sokoban level."
+                    FontSize="14"
+                    TextColor="{AppThemeBinding Light=#6B6F7A, Dark=#A6A9B5}" />
 
-                <VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <Border
+                Padding="18"
+                StrokeThickness="1"
+                Stroke="{AppThemeBinding Light=#E1E4EA, Dark=#343744}"
+                Background="{AppThemeBinding Light=White, Dark=#1E202A}"
+                StrokeShape="RoundRectangle 16">
+
+                <VerticalStackLayout
+                    Spacing="14">
+
                     <Label
-                        Text="Rows"
-                        HorizontalOptions="Center" />
+                        Text="Level Details"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light=#171821, Dark=White}" />
 
-                    <Picker
-                        x:Name="RowsPicker"
-                        WidthRequest="100" />
+                    <Entry
+                        x:Name="LevelNameEntry"
+                        Placeholder="Custom level name"
+                        Text="My Level" />
+
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        ColumnSpacing="15">
+
+                        <VerticalStackLayout
+                            Grid.Column="0"
+                            Spacing="5">
+
+                            <Label
+                                Text="Rows"
+                                HorizontalOptions="Center"
+                                FontAttributes="Bold" />
+
+                            <Picker
+                                x:Name="RowsPicker"
+                                HorizontalOptions="Fill" />
+
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Spacing="5">
+
+                            <Label
+                                Text="Columns"
+                                HorizontalOptions="Center"
+                                FontAttributes="Bold" />
+
+                            <Picker
+                                x:Name="ColumnsPicker"
+                                HorizontalOptions="Fill" />
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                    <Button
+                        Text="Create Grid"
+                        HeightRequest="46"
+                        CornerRadius="12"
+                        BackgroundColor="#5746E8"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        Clicked="CreateGridClicked" />
+
                 </VerticalStackLayout>
 
-                <VerticalStackLayout>
-                    <Label
-                        Text="Columns"
-                        HorizontalOptions="Center" />
+            </Border>
 
-                    <Picker
-                        x:Name="ColumnsPicker"
-                        WidthRequest="100" />
+            <Border
+                Padding="18"
+                StrokeThickness="1"
+                Stroke="{AppThemeBinding Light=#E1E4EA, Dark=#343744}"
+                Background="{AppThemeBinding Light=White, Dark=#1E202A}"
+                StrokeShape="RoundRectangle 16">
+
+                <VerticalStackLayout
+                    Spacing="12">
+
+                    <Label
+                        Text="Choose a Tile"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light=#171821, Dark=White}" />
+
+                    <Grid
+                        x:Name="EditorTools"
+                        ColumnDefinitions="*,*,*,*,*"
+                        ColumnSpacing="5">
+
+                        <Button
+                            x:Name="WallToolButton"
+                            Grid.Column="0"
+                            Text="Wall"
+                            FontSize="12"
+                            Padding="4"
+                            CommandParameter="Wall"
+                            Clicked="ToolClicked" />
+
+                        <Button
+                            x:Name="FloorToolButton"
+                            Grid.Column="1"
+                            Text="Floor"
+                            FontSize="12"
+                            Padding="4"
+                            CommandParameter="Floor"
+                            Clicked="ToolClicked" />
+
+                        <Button
+                            x:Name="BoxToolButton"
+                            Grid.Column="2"
+                            Text="Box"
+                            FontSize="12"
+                            Padding="4"
+                            CommandParameter="Box"
+                            Clicked="ToolClicked" />
+
+                        <Button
+                            x:Name="TargetToolButton"
+                            Grid.Column="3"
+                            Text="Target"
+                            FontSize="12"
+                            Padding="4"
+                            CommandParameter="Target"
+                            Clicked="ToolClicked" />
+
+                        <Button
+                            x:Name="PlayerToolButton"
+                            Grid.Column="4"
+                            Text="Player"
+                            FontSize="12"
+                            Padding="4"
+                            CommandParameter="Player"
+                            Clicked="ToolClicked" />
+
+                    </Grid>
+
+                    <Label
+                        x:Name="SelectedToolLabel"
+                        Text="Selected: Wall"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        TextColor="#6558E8" />
+
                 </VerticalStackLayout>
 
-            </HorizontalStackLayout>
+            </Border>
 
-            <Button
-                Text="Create Grid"
-                Clicked="CreateGridClicked"
-                HorizontalOptions="Center"
-                WidthRequest="180" />
+            <Border
+                Padding="15"
+                StrokeThickness="1"
+                Stroke="{AppThemeBinding Light=#E1E4EA, Dark=#343744}"
+                Background="{AppThemeBinding Light=White, Dark=#1E202A}"
+                StrokeShape="RoundRectangle 16">
 
-            <Label
-                Text="Choose a tile"
-                FontAttributes="Bold"
-                HorizontalOptions="Center" />
+                <ScrollView
+                    Orientation="Horizontal"
+                    HorizontalScrollBarVisibility="Never">
 
-            <HorizontalStackLayout
-                x:Name="EditorTools"
-                HorizontalOptions="Center"
-                Spacing="8">
+                    <Grid
+                        x:Name="EditorGrid"
+                        RowSpacing="2"
+                        ColumnSpacing="2"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center" />
 
-                <Button
-                    Text="Wall #"
-                    CommandParameter="#"
-                    Clicked="ToolClicked" />
+                </ScrollView>
 
-                <Button
-                    Text="Floor"
-                    CommandParameter=" "
-                    Clicked="ToolClicked" />
-
-                <Button
-                    Text="Box $"
-                    CommandParameter="$"
-                    Clicked="ToolClicked" />
-
-                <Button
-                    Text="Target ."
-                    CommandParameter="."
-                    Clicked="ToolClicked" />
-
-                <Button
-                    Text="Player @"
-                    CommandParameter="@"
-                    Clicked="ToolClicked" />
-
-            </HorizontalStackLayout>
-
-            <Label
-                x:Name="SelectedToolLabel"
-                Text="Selected: Wall"
-                HorizontalOptions="Center" />
-
-            <Grid
-                x:Name="EditorGrid"
-                HorizontalOptions="Center"
-                VerticalOptions="Center" />
+            </Border>
 
             <Label
                 x:Name="EditorStatus"
                 Text=""
                 FontAttributes="Bold"
-                HorizontalOptions="Center" />
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                TextColor="{AppThemeBinding Light=#555965, Dark=#D2D4DC}" />
 
             <Button
                 x:Name="TestButton"
                 Text="Test Level"
-                Clicked="TestLevelClicked"
-                HorizontalOptions="Center"
-                WidthRequest="180" />
+                HeightRequest="48"
+                CornerRadius="12"
+                BackgroundColor="#5746E8"
+                TextColor="White"
+                FontAttributes="Bold"
+                Clicked="TestLevelClicked" />
 
             <Grid
                 x:Name="TestControls"
@@ -121,35 +224,55 @@
                 RowDefinitions="Auto,Auto"
                 ColumnDefinitions="Auto,Auto,Auto"
                 HorizontalOptions="Center"
-                ColumnSpacing="10"
-                RowSpacing="10">
+                ColumnSpacing="8"
+                RowSpacing="8">
 
                 <Button
                     Grid.Row="0"
                     Grid.Column="1"
                     Text="↑"
-                    WidthRequest="60"
+                    FontSize="20"
+                    WidthRequest="58"
+                    HeightRequest="46"
+                    CornerRadius="12"
+                    BackgroundColor="#5746E8"
+                    TextColor="White"
                     Clicked="TestUpClicked" />
 
                 <Button
                     Grid.Row="1"
                     Grid.Column="0"
                     Text="←"
-                    WidthRequest="60"
+                    FontSize="20"
+                    WidthRequest="58"
+                    HeightRequest="46"
+                    CornerRadius="12"
+                    BackgroundColor="#5746E8"
+                    TextColor="White"
                     Clicked="TestLeftClicked" />
 
                 <Button
                     Grid.Row="1"
                     Grid.Column="1"
                     Text="↓"
-                    WidthRequest="60"
+                    FontSize="20"
+                    WidthRequest="58"
+                    HeightRequest="46"
+                    CornerRadius="12"
+                    BackgroundColor="#5746E8"
+                    TextColor="White"
                     Clicked="TestDownClicked" />
 
                 <Button
                     Grid.Row="1"
                     Grid.Column="2"
                     Text="→"
-                    WidthRequest="60"
+                    FontSize="20"
+                    WidthRequest="58"
+                    HeightRequest="46"
+                    CornerRadius="12"
+                    BackgroundColor="#5746E8"
+                    TextColor="White"
                     Clicked="TestRightClicked" />
 
             </Grid>
@@ -157,18 +280,21 @@
             <Button
                 x:Name="CancelTestButton"
                 Text="Stop Test"
-                Clicked="CancelTestClicked"
                 IsVisible="False"
-                HorizontalOptions="Center"
-                WidthRequest="180" />
+                HeightRequest="46"
+                CornerRadius="12"
+                Clicked="CancelTestClicked" />
 
             <Button
                 x:Name="SaveButton"
                 Text="Save Level"
-                Clicked="SaveLevelClicked"
                 IsEnabled="False"
-                HorizontalOptions="Center"
-                WidthRequest="180" />
+                HeightRequest="48"
+                CornerRadius="12"
+                BackgroundColor="#2F855A"
+                TextColor="White"
+                FontAttributes="Bold"
+                Clicked="SaveLevelClicked" />
 
         </VerticalStackLayout>
 

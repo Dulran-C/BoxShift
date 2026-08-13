@@ -1,6 +1,7 @@
 using BoxShift.Helpers;
 using BoxShift.Models;
 using BoxShift.Services;
+using Microsoft.Maui.Controls.Shapes;
 
 namespace BoxShift.Pages;
 
@@ -24,6 +25,9 @@ public partial class EditorPage : ContentPage
     private readonly CustomLevelService
         _customLevelService;
 
+    private readonly SettingsService
+        _settingsService;
+
     public string CustomIndex { get; set; } =
         "-1";
 
@@ -33,6 +37,9 @@ public partial class EditorPage : ContentPage
 
         _customLevelService =
             new CustomLevelService();
+
+        _settingsService =
+            new SettingsService();
 
         List<int> sizes =
             Enumerable.Range(5, 8).ToList();
@@ -44,6 +51,8 @@ public partial class EditorPage : ContentPage
         ColumnsPicker.SelectedItem = 5;
 
         CreateBlankGrid(5, 5);
+
+        UpdateToolSelection();
     }
 
     protected override async void OnAppearing()
@@ -53,6 +62,10 @@ public partial class EditorPage : ContentPage
         if (!_existingLevelLoaded)
         {
             await LoadExistingLevelAsync();
+        }
+        else if (_testEngine == null)
+        {
+            DisplayEditorGrid();
         }
     }
 
@@ -126,7 +139,9 @@ public partial class EditorPage : ContentPage
         }
 
         _levelValidated = false;
+
         SaveButton.IsEnabled = false;
+        SaveButton.Text = "Update Level";
 
         EditorStatus.Text =
             "Editing custom level. Test before saving changes.";
@@ -135,7 +150,7 @@ public partial class EditorPage : ContentPage
     }
 
     private void CreateGridClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         int rows =
@@ -183,7 +198,7 @@ public partial class EditorPage : ContentPage
     }
 
     private void ToolClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         if (sender is not Button button)
@@ -191,25 +206,83 @@ public partial class EditorPage : ContentPage
             return;
         }
 
-        string? value =
-            button.CommandParameter?.ToString();
+        string tool =
+            button.CommandParameter?.ToString()
+            ?? "Wall";
 
-        if (string.IsNullOrEmpty(value))
+        if (tool == "Floor")
         {
             _selectedTool =
                 GameSymbols.Floor;
-
-            SelectedToolLabel.Text =
-                "Selected: Floor";
-
-            return;
+        }
+        else if (tool == "Box")
+        {
+            _selectedTool =
+                GameSymbols.Box;
+        }
+        else if (tool == "Target")
+        {
+            _selectedTool =
+                GameSymbols.Target;
+        }
+        else if (tool == "Player")
+        {
+            _selectedTool =
+                GameSymbols.Player;
+        }
+        else
+        {
+            _selectedTool =
+                GameSymbols.Wall;
         }
 
-        _selectedTool =
-            value[0];
-
         SelectedToolLabel.Text =
-            $"Selected: {button.Text}";
+            $"Selected: {tool}";
+
+        UpdateToolSelection();
+    }
+
+    private void UpdateToolSelection()
+    {
+        Button[] buttons =
+        {
+            WallToolButton,
+            FloorToolButton,
+            BoxToolButton,
+            TargetToolButton,
+            PlayerToolButton
+        };
+
+        foreach (Button button in buttons)
+        {
+            button.BorderWidth = 0;
+            button.Opacity = 0.75;
+        }
+
+        Button selectedButton =
+            _selectedTool switch
+            {
+                GameSymbols.Floor =>
+                    FloorToolButton,
+
+                GameSymbols.Box =>
+                    BoxToolButton,
+
+                GameSymbols.Target =>
+                    TargetToolButton,
+
+                GameSymbols.Player =>
+                    PlayerToolButton,
+
+                _ =>
+                    WallToolButton
+            };
+
+        selectedButton.BorderColor =
+            Color.FromArgb("#5746E8");
+
+        selectedButton.BorderWidth = 3;
+        selectedButton.Opacity = 1;
     }
 
     private void DisplayEditorGrid()
@@ -223,6 +296,9 @@ public partial class EditorPage : ContentPage
 
         int columns =
             _editorGrid.GetLength(1);
+
+        double cellSize =
+            GetCellSize(columns);
 
         for (int row = 0;
              row < rows;
@@ -250,18 +326,51 @@ public partial class EditorPage : ContentPage
                  column < columns;
                  column++)
             {
+                char tile =
+                    _editorGrid[
+                        row,
+                        column];
+
+                var colors =
+                    GetThemeColors();
+
                 Button cellButton =
                     new Button
                     {
                         Text =
-                            _editorGrid[
-                                row,
-                                column]
-                            .ToString(),
+                            GetTileText(tile),
 
-                        WidthRequest = 45,
-                        HeightRequest = 45,
+                        FontSize = 14,
+
+                        FontAttributes =
+                            FontAttributes.Bold,
+
+                        WidthRequest =
+                            cellSize,
+
+                        HeightRequest =
+                            cellSize,
+
                         Padding = 0,
+
+                        CornerRadius = 5,
+
+                        BackgroundColor =
+                            GetTileBackground(
+                                tile,
+                                colors),
+
+                        TextColor =
+                            GetTileTextColor(
+                                tile,
+                                colors),
+
+                        BorderColor =
+                            GetTileBorderColor(
+                                tile,
+                                colors),
+
+                        BorderWidth = 1,
 
                         CommandParameter =
                             $"{row},{column}"
@@ -285,7 +394,7 @@ public partial class EditorPage : ContentPage
     }
 
     private void EditorCellClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         if (sender is not Button button)
@@ -360,7 +469,7 @@ public partial class EditorPage : ContentPage
     }
 
     private void TestLevelClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         Level? level =
@@ -499,6 +608,12 @@ public partial class EditorPage : ContentPage
         EditorGrid.RowDefinitions.Clear();
         EditorGrid.ColumnDefinitions.Clear();
 
+        int columns =
+            _testEngine.Board.Columns;
+
+        double cellSize =
+            GetCellSize(columns);
+
         for (int row = 0;
              row <
              _testEngine.Board.Rows;
@@ -529,39 +644,307 @@ public partial class EditorPage : ContentPage
                  _testEngine.Board.Columns;
                  column++)
             {
-                Label cellLabel =
-                    new Label
-                    {
-                        Text =
-                            _testEngine.Board
-                                .GetCell(
-                                    row,
-                                    column)
-                                .ToString(),
+                char tile =
+                    _testEngine.Board
+                        .GetCell(
+                            row,
+                            column);
 
-                        WidthRequest = 45,
-                        HeightRequest = 45,
-                        FontSize = 25,
-
-                        HorizontalTextAlignment =
-                            TextAlignment.Center,
-
-                        VerticalTextAlignment =
-                            TextAlignment.Center
-                    };
+                View tileView =
+                    CreateDisplayTile(
+                        tile,
+                        cellSize);
 
                 Grid.SetRow(
-                    cellLabel,
+                    tileView,
                     row);
 
                 Grid.SetColumn(
-                    cellLabel,
+                    tileView,
                     column);
 
                 EditorGrid.Children.Add(
-                    cellLabel);
+                    tileView);
             }
         }
+    }
+
+    private View CreateDisplayTile(
+        char tile,
+        double cellSize)
+    {
+        var colors =
+            GetThemeColors();
+
+        Color backgroundColor =
+            GetTileBackground(
+                tile,
+                colors);
+
+        Color strokeColor =
+            GetTileBorderColor(
+                tile,
+                colors);
+
+        double strokeThickness = 1;
+
+        if (tile ==
+                GameSymbols.BoxOnTarget ||
+            tile ==
+                GameSymbols.PlayerOnTarget)
+        {
+            strokeColor =
+                colors.Target;
+
+            strokeThickness = 4;
+        }
+
+        Label label =
+            new Label
+            {
+                Text =
+                    GetTileText(tile),
+
+                FontSize = 14,
+
+                FontAttributes =
+                    FontAttributes.Bold,
+
+                TextColor =
+                    GetTileTextColor(
+                        tile,
+                        colors),
+
+                HorizontalTextAlignment =
+                    TextAlignment.Center,
+
+                VerticalTextAlignment =
+                    TextAlignment.Center
+            };
+
+        Border border =
+            new Border
+            {
+                WidthRequest =
+                    cellSize,
+
+                HeightRequest =
+                    cellSize,
+
+                Padding = 0,
+
+                Background =
+                    new SolidColorBrush(
+                        backgroundColor),
+
+                Stroke =
+                    new SolidColorBrush(
+                        strokeColor),
+
+                StrokeThickness =
+                    strokeThickness,
+
+                StrokeShape =
+                    new RoundRectangle
+                    {
+                        CornerRadius =
+                            new CornerRadius(5)
+                    },
+
+                Content =
+                    label
+            };
+
+        return border;
+    }
+
+    private string GetTileText(
+        char tile)
+    {
+        if (tile ==
+                GameSymbols.Player ||
+            tile ==
+                GameSymbols.PlayerOnTarget)
+        {
+            return "P";
+        }
+
+        if (tile ==
+                GameSymbols.Box ||
+            tile ==
+                GameSymbols.BoxOnTarget)
+        {
+            return "B";
+        }
+
+        if (tile ==
+            GameSymbols.Target)
+        {
+            return "X";
+        }
+
+        return "";
+    }
+
+    private Color GetTileBackground(
+        char tile,
+        (
+            Color Floor,
+            Color Wall,
+            Color Box,
+            Color Player,
+            Color Target,
+            Color Edge,
+            Color DarkText)
+        colors)
+    {
+        if (tile ==
+            GameSymbols.Wall)
+        {
+            return colors.Wall;
+        }
+
+        if (tile ==
+                GameSymbols.Box ||
+            tile ==
+                GameSymbols.BoxOnTarget)
+        {
+            return colors.Box;
+        }
+
+        if (tile ==
+                GameSymbols.Player ||
+            tile ==
+                GameSymbols.PlayerOnTarget)
+        {
+            return colors.Player;
+        }
+
+        if (tile ==
+            GameSymbols.Target)
+        {
+            return colors.Target;
+        }
+
+        return colors.Floor;
+    }
+
+    private Color GetTileBorderColor(
+        char tile,
+        (
+            Color Floor,
+            Color Wall,
+            Color Box,
+            Color Player,
+            Color Target,
+            Color Edge,
+            Color DarkText)
+        colors)
+    {
+        if (tile ==
+                GameSymbols.BoxOnTarget ||
+            tile ==
+                GameSymbols.PlayerOnTarget)
+        {
+            return colors.Target;
+        }
+
+        if (tile ==
+            GameSymbols.Wall)
+        {
+            return colors.Wall;
+        }
+
+        return colors.Edge;
+    }
+
+    private Color GetTileTextColor(
+        char tile,
+        (
+            Color Floor,
+            Color Wall,
+            Color Box,
+            Color Player,
+            Color Target,
+            Color Edge,
+            Color DarkText)
+        colors)
+    {
+        if (tile ==
+            GameSymbols.Target)
+        {
+            return colors.DarkText;
+        }
+
+        return Colors.White;
+    }
+
+    private double GetCellSize(
+        int columns)
+    {
+        if (columns >= 11)
+        {
+            return 24;
+        }
+
+        if (columns >= 9)
+        {
+            return 28;
+        }
+
+        if (columns >= 7)
+        {
+            return 32;
+        }
+
+        return 38;
+    }
+
+    private (
+        Color Floor,
+        Color Wall,
+        Color Box,
+        Color Player,
+        Color Target,
+        Color Edge,
+        Color DarkText)
+        GetThemeColors()
+    {
+        string theme =
+            _settingsService.GridTheme;
+
+        if (theme == "Ocean")
+        {
+            return (
+                Color.FromArgb("#DDF4F7"),
+                Color.FromArgb("#155E75"),
+                Color.FromArgb("#F59E72"),
+                Color.FromArgb("#0284C7"),
+                Color.FromArgb("#7DD3FC"),
+                Color.FromArgb("#164E63"),
+                Color.FromArgb("#12313A"));
+        }
+
+        if (theme == "Forest")
+        {
+            return (
+                Color.FromArgb("#E8F0E4"),
+                Color.FromArgb("#355E3B"),
+                Color.FromArgb("#A56A43"),
+                Color.FromArgb("#2F855A"),
+                Color.FromArgb("#C6D57E"),
+                Color.FromArgb("#294D31"),
+                Color.FromArgb("#243B2A"));
+        }
+
+        return (
+            Color.FromArgb("#EEEAE2"),
+            Color.FromArgb("#374151"),
+            Color.FromArgb("#C98545"),
+            Color.FromArgb("#5746E8"),
+            Color.FromArgb("#F2CE67"),
+            Color.FromArgb("#4B5563"),
+            Color.FromArgb("#352E1F"));
     }
 
     private void MoveTestPlayer(
@@ -610,7 +993,7 @@ public partial class EditorPage : ContentPage
     }
 
     private void CancelTestClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         _testEngine = null;
@@ -634,7 +1017,7 @@ public partial class EditorPage : ContentPage
     }
 
     private async void SaveLevelClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         if (!_levelValidated)
@@ -663,7 +1046,7 @@ public partial class EditorPage : ContentPage
             EditorStatus.Text =
                 "Custom level updated!";
         }
-        else  
+        else
         {
             await _customLevelService
                 .SaveCustomLevelAsync(
@@ -681,7 +1064,7 @@ public partial class EditorPage : ContentPage
     }
 
     private void TestUpClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         MoveTestPlayer(
@@ -689,7 +1072,7 @@ public partial class EditorPage : ContentPage
     }
 
     private void TestDownClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         MoveTestPlayer(
@@ -697,7 +1080,7 @@ public partial class EditorPage : ContentPage
     }
 
     private void TestLeftClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         MoveTestPlayer(
@@ -705,7 +1088,7 @@ public partial class EditorPage : ContentPage
     }
 
     private void TestRightClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         MoveTestPlayer(
