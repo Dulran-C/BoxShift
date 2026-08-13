@@ -4,7 +4,8 @@
     x:Class="BoxShift.Pages.HomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="BoxShift">
+    Title="BoxShift"
+    BackgroundColor="{AppThemeBinding Light=#F5F7FB, Dark=#12131A}">
 
     <Grid
         Padding="30"
@@ -14,53 +15,101 @@
             Grid.Row="0"
             VerticalOptions="End"
             HorizontalOptions="Center"
-            Spacing="5">
+            Spacing="8">
+
+            <Border
+                WidthRequest="75"
+                HeightRequest="75"
+                StrokeThickness="0"
+                Background="#5746E8"
+                StrokeShape="RoundRectangle 20">
+
+                <Label
+                    Text="B"
+                    FontSize="38"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    HorizontalTextAlignment="Center"
+                    VerticalTextAlignment="Center" />
+
+            </Border>
 
             <Label
                 Text="BOXSHIFT"
                 FontSize="42"
                 FontAttributes="Bold"
-                HorizontalOptions="Center" />
+                CharacterSpacing="2"
+                HorizontalOptions="Center"
+                TextColor="{AppThemeBinding Light=#171821, Dark=White}" />
 
             <Label
                 Text="Push. Plan. Solve."
                 FontSize="17"
-                HorizontalOptions="Center" />
+                HorizontalOptions="Center"
+                TextColor="{AppThemeBinding Light=#666A75, Dark=#B8BBC7}" />
 
         </VerticalStackLayout>
+
+        <Border
+            Grid.Row="1"
+            WidthRequest="320"
+            Margin="0,35"
+            Padding="24"
+            StrokeThickness="1"
+            Stroke="{AppThemeBinding Light=#E1E4EA, Dark=#343744}"
+            Background="{AppThemeBinding Light=White, Dark=#1E202A}"
+            StrokeShape="RoundRectangle 22">
+
+            <VerticalStackLayout
+                Spacing="14">
+
+                <Button
+                    Text="Play"
+                    HeightRequest="55"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    CornerRadius="14"
+                    BackgroundColor="#5746E8"
+                    TextColor="White"
+                    Clicked="PlayClicked" />
+
+                <Button
+                    Text="Create Level"
+                    HeightRequest="52"
+                    FontSize="17"
+                    CornerRadius="14"
+                    Clicked="EditorClicked" />
+
+                <Button
+                    Text="Settings"
+                    HeightRequest="52"
+                    FontSize="17"
+                    CornerRadius="14"
+                    Clicked="SettingsClicked" />
+
+            </VerticalStackLayout>
+
+        </Border>
 
         <VerticalStackLayout
-            Grid.Row="1"
-            WidthRequest="280"
-            Spacing="15"
-            Margin="0,40">
+            Grid.Row="2"
+            VerticalOptions="Start"
+            HorizontalOptions="Center"
+            Spacing="2">
 
-            <Button
-                Text="Play"
-                HeightRequest="55"
-                FontSize="18"
-                Clicked="PlayClicked" />
+            <Label
+                Text="Sokoban Puzzle Game"
+                FontSize="13"
+                HorizontalOptions="Center"
+                TextColor="{AppThemeBinding Light=#777B86, Dark=#999DAA}" />
 
-            <Button
-                Text="Create Level"
-                HeightRequest="55"
-                FontSize="18"
-                Clicked="EditorClicked" />
-
-            <Button
-                Text="Settings"
-                HeightRequest="55"
-                FontSize="18"
-                Clicked="SettingsClicked" />
+            <Label
+                Text="Version 1.0"
+                FontSize="11"
+                HorizontalOptions="Center"
+                TextColor="{AppThemeBinding Light=#999DA5, Dark=#747784}" />
 
         </VerticalStackLayout>
-
-        <Label
-            Grid.Row="2"
-            Text="Sokoban Puzzle Game"
-            FontSize="13"
-            VerticalOptions="Start"
-            HorizontalOptions="Center" />
 
     </Grid>
 

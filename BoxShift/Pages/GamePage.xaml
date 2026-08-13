@@ -4,105 +4,163 @@
     x:Class="BoxShift.Pages.GamePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="BoxShift">
+    Title="BoxShift"
+    BackgroundColor="{AppThemeBinding Light=#F5F7FB, Dark=#12131A}">
 
     <Grid
-        Padding="15"
-        RowDefinitions="Auto,*,Auto,Auto,Auto">
+        Padding="18"
+        RowDefinitions="Auto,*,Auto,Auto"
+        RowSpacing="12">
 
-        <Label
-            x:Name="LevelTitle"
+        <Border
             Grid.Row="0"
-            Text="Level"
-            FontSize="26"
-            FontAttributes="Bold"
-            HorizontalOptions="Center"
-            Margin="0,5,0,10" />
+            Padding="18,12"
+            StrokeThickness="1"
+            Stroke="{AppThemeBinding Light=#E1E4EA, Dark=#343744}"
+            Background="{AppThemeBinding Light=White, Dark=#1E202A}"
+            StrokeShape="RoundRectangle 16">
 
-        <ScrollView
+            <Grid ColumnDefinitions="*,Auto">
+
+                <VerticalStackLayout
+                    Grid.Column="0"
+                    Spacing="2">
+
+                    <Label
+                        Text="BOXSHIFT"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        TextColor="#6558E8" />
+
+                    <Label
+                        x:Name="LevelTitle"
+                        Text="Level"
+                        FontSize="26"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light=#171821, Dark=White}" />
+
+                </VerticalStackLayout>
+
+                <Border
+                    Grid.Column="1"
+                    Padding="14,8"
+                    StrokeThickness="0"
+                    Background="{AppThemeBinding Light=#EEEAFE, Dark=#302D55}"
+                    StrokeShape="RoundRectangle 12"
+                    VerticalOptions="Center">
+
+                    <Label
+                        x:Name="MoveCounter"
+                        Text="Moves: 0"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light=#5145CD, Dark=#C6C0FF}" />
+
+                </Border>
+
+            </Grid>
+
+        </Border>
+
+        <Border
             Grid.Row="1"
-            Orientation="Both"
-            HorizontalOptions="Fill"
-            VerticalOptions="Fill">
+            Padding="18"
+            StrokeThickness="1"
+            Stroke="{AppThemeBinding Light=#E1E4EA, Dark=#343744}"
+            Background="{AppThemeBinding Light=White, Dark=#1E202A}"
+            StrokeShape="RoundRectangle 18">
 
-            <Grid 
-                x:Name="BoardGrid"
-                HorizontalOptions="Center"
-                VerticalOptions="Center" />
+            <ScrollView
+                Orientation="Both"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
 
-        </ScrollView>
+                <Grid
+                    x:Name="BoardGrid"
+                    RowSpacing="2"
+                    ColumnSpacing="2"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
 
-        <Label
-            x:Name="MoveCounter"
-            Grid.Row="2"
-            Text="Moves: 0"
-            FontSize="18"
-            HorizontalOptions="Center"
-            Margin="0,10,0,5" />
+            </ScrollView>
+
+        </Border>
 
         <Grid
-            Grid.Row="3"
+            Grid.Row="2"
             RowDefinitions="Auto,Auto"
             ColumnDefinitions="Auto,Auto,Auto"
             HorizontalOptions="Center"
             ColumnSpacing="8"
-            RowSpacing="8"
-            Margin="0,5">
+            RowSpacing="8">
 
             <Button
                 Grid.Row="0"
                 Grid.Column="1"
                 Text="↑"
-                FontSize="20"
-                WidthRequest="55"
-                HeightRequest="45"
+                FontSize="22"
+                WidthRequest="58"
+                HeightRequest="48"
+                CornerRadius="14"
+                BackgroundColor="#5746E8"
+                TextColor="White"
                 Clicked="UpClicked" />
 
             <Button
                 Grid.Row="1"
                 Grid.Column="0"
                 Text="←"
-                FontSize="20"
-                WidthRequest="55"
-                HeightRequest="45"
+                FontSize="22"
+                WidthRequest="58"
+                HeightRequest="48"
+                CornerRadius="14"
+                BackgroundColor="#5746E8"
+                TextColor="White"
                 Clicked="LeftClicked" />
 
             <Button
                 Grid.Row="1"
                 Grid.Column="1"
                 Text="↓"
-                FontSize="20"
-                WidthRequest="55"
-                HeightRequest="45"
+                FontSize="22"
+                WidthRequest="58"
+                HeightRequest="48"
+                CornerRadius="14"
+                BackgroundColor="#5746E8"
+                TextColor="White"
                 Clicked="DownClicked" />
 
             <Button
                 Grid.Row="1"
                 Grid.Column="2"
                 Text="→"
-                FontSize="20"
-                WidthRequest="55"
-                HeightRequest="45"
+                FontSize="22"
+                WidthRequest="58"
+                HeightRequest="48"
+                CornerRadius="14"
+                BackgroundColor="#5746E8"
+                TextColor="White"
                 Clicked="RightClicked" />
 
         </Grid>
 
         <HorizontalStackLayout
-            Grid.Row="4"
+            Grid.Row="3"
             HorizontalOptions="Center"
-            Spacing="12"
-            Margin="0,5,0,5">
+            Spacing="12">
 
             <Button
                 Text="Undo"
-                WidthRequest="90"
-                HeightRequest="42"
+                WidthRequest="105"
+                HeightRequest="44"
+                CornerRadius="12"
                 Clicked="UndoClicked" />
 
             <Button
                 Text="Reset"
-                WidthRequest="90"
-                HeightRequest="42"
+                WidthRequest="105"
+                HeightRequest="44"
+                CornerRadius="12"
                 Clicked="ResetClicked" />
 
         </HorizontalStackLayout>
