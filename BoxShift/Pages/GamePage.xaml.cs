@@ -4,10 +4,13 @@ using BoxShift.Services;
 
 namespace BoxShift.Pages;
 
+[QueryProperty(nameof(LevelIndex), "levelIndex")]
 public partial class GamePage : ContentPage
 {
     private readonly GameEngine _gameEngine;
     private readonly LevelService _levelService;
+
+    public string LevelIndex { get; set; } = "0";
 
     public GamePage()
     {
@@ -21,7 +24,10 @@ public partial class GamePage : ContentPage
     {
         base.OnAppearing();
 
-        await LoadGameAsync();
+        if (_gameEngine.Board == null)
+        {
+            await LoadGameAsync();
+        }
     }
 
     private async Task LoadGameAsync()
@@ -40,17 +46,35 @@ public partial class GamePage : ContentPage
                 return;
             }
 
-            _gameEngine.LoadFirstLevel(levels);
+            int selectedIndex = 0;
+
+            if (!int.TryParse(
+                    LevelIndex,
+                    out selectedIndex))
+            {
+                selectedIndex = 0;
+            }
+
+            if (selectedIndex < 0 ||
+                selectedIndex >= levels.Levels.Count)
+            {
+                selectedIndex = 0;
+            }
+
+            Level selectedLevel =
+                levels.Levels[selectedIndex];
+
+            _gameEngine.LoadLevel(selectedLevel);
 
             DisplayBoard();
         }
         catch (Exception exception)
         {
             Debug.WriteLine(
-                $"Could not load levels: {exception.Message}");
+                $"Could not load level: {exception.Message}");
 
             LevelTitle.Text =
-                "Could not load levels";
+                "Could not load level";
         }
     }
 

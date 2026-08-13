@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="BoxShift.Pages.LevelSelectPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Levels">
+
+    <Grid
+        Padding="25"
+        RowDefinitions="Auto,*">
+
+        <VerticalStackLayout
+            Grid.Row="0"
+            Spacing="5"
+            Margin="0,10,0,20">
+
+            <Label
+                Text="Choose a Level"
+                FontSize="32"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Select a puzzle to begin"
+                FontSize="16"
+                HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+
+        <CollectionView
+            x:Name="LevelsCollection"
+            Grid.Row="1"
+            SelectionMode="None">
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate>
+
+                    <Border
+                        Margin="0,6"
+                        Padding="15"
+                        StrokeThickness="1">
+
+                        <Grid
+                            ColumnDefinitions="*,Auto">
+
+                            <Label
+                                Grid.Column="0"
+                                Text="{Binding Name}"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center" />
+
+                            <Button
+                                Grid.Column="1"
+                                Text="Play"
+                                WidthRequest="90"
+                                CommandParameter="{Binding .}"
+                                Clicked="PlayLevelClicked" />
+
+                        </Grid>
+
+                    </Border>
+
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>
